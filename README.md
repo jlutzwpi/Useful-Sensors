@@ -1,4 +1,4 @@
-# Usefule-Sensors
+# Useful-Sensors
 
 Various I2C scans and tests to test out the I2C data reads on various boards.
 
