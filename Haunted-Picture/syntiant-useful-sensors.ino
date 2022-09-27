@@ -146,9 +146,10 @@ void NDP_INT_service(){
     myFile.close();
     delay(1000);
   }
-  //match for justin
-  if(match == 1 || id == 1)
+  // Justin identified for the first time
+  if(recognized == false && match == 1)
   {
+    Serial.println("\n***We have a match! ****\n");
     recognized = true;
     //update the calibration register
     myWire.beginTransmission(kSlaveAddress);
@@ -156,6 +157,10 @@ void NDP_INT_service(){
     myWire.write((byte)true);
     myWire.endTransmission();
     delay(100);
+  }
+  //match for justin
+  if(id > -1)
+  {
     //play hi justin
     myFile = SD.open("hijustin.wav", FILE_READ);
     AudioZero.begin(22050);
@@ -165,7 +170,6 @@ void NDP_INT_service(){
   }
   else
   {
-    Serial.println("zopen_set");
     //play don't know you
     myFile = SD.open("dontknowyou.wav", FILE_READ);
     AudioZero.begin(22050);
@@ -179,10 +183,12 @@ void NDP_INT_service(){
 
 void loop() {
   results = read();
-  int confidence = results.confidence * 100;
+  float confidence = results.confidence * 100;
+  //float id_conf = results.id_confidence * 100;
   id = results.identity;
   Serial.println("ID: " + String(results.identity));
-  Serial.println("Confidence: " + String(confidence) + "%");
+  //Serial.println("ID Confidence: " + String(id_conf));
+  Serial.println("Face Confidence: " + String(confidence) + "%");
   Serial.println("-------------------------");
   Serial.println("Bbox coords: (" + String(results.bounding_box[0]) + "," + String(results.bounding_box[1]) + "), (" + String(results.bounding_box[2]) + "," + String(results.bounding_box[3]) + ").");
   //if we are confident in our results, play spooky voice
